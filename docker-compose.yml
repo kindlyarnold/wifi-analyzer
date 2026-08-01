@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  wifi-analyzer:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: wifi-analyzer:latest
+    container_name: wifi-analyzer
+    
+    # Run in privileged mode for network scanning
+    privileged: true
+    network_mode: host
+    
+    # Mount volumes for reports
+    volumes:
+      - ./output:/output
+      - /etc/resolv.conf:/etc/resolv.conf:ro
+    
+    # Environment variables
+    environment:
+      - TARGET_NETWORK=192.168.1.0/24
+      - TEST_CREDENTIALS=false
+      - AGGRESSIVE_SCAN=false
+    
+    # Override to run specific scan
+    # Example: docker-compose run wifi-analyzer 192.168.1.0/24 -c -a
+    command: "192.168.1.0/24"
+    
+    # Keep running
+    stdin_open: true
+    tty: true
